@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using TodoListAPI.Models;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web.Resource;
 
 namespace TodoListAPI.Controllers
@@ -22,10 +23,12 @@ namespace TodoListAPI.Controllers
         static readonly string[] scopeRequiredByApi = new string[] { "access_as_user" };
 
         private readonly TodoContext _context;
+        private ILogger<TodoListController> _logger;
 
-        public TodoListController(TodoContext context)
+        public TodoListController(TodoContext context, ILogger<TodoListController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/TodoItems
@@ -34,6 +37,7 @@ namespace TodoListAPI.Controllers
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             string owner = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            LogTokenClaims();
             return await _context.TodoItems.Where(item => item.Owner == owner).ToListAsync();
         }
 
@@ -42,7 +46,7 @@ namespace TodoListAPI.Controllers
         public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
- 
+
             var todoItem = await _context.TodoItems.FindAsync(id);
 
             if (todoItem == null)
@@ -130,6 +134,21 @@ namespace TodoListAPI.Controllers
         private bool TodoItemExists(int id)
         {
             return _context.TodoItems.Any(e => e.Id == id);
+        }
+
+        private void LogTokenClaims()
+        {
+            const string scopeClaimType = "http://schemas.microsoft.com/identity/claims/scope";
+            const string nameClaimType = "name"; // NB: no idea why this is not part of the ClaimTypes nor JwtRegisteredClaimNames enumerations
+
+            // See how to stop token claims to be mapped into proprietary Microsoft ones: https://stackoverflow.com/questions/47696872/incorrect-claim-type
+            // See explanation of which namespace to use for JwtRegisteredClaimNames: https://stackoverflow.com/questions/38526950/namespaces-for-net-jwt-token-validation-system-vs-microsoft#comment65187203_38901344
+            var claimsLog = $"Received token with following claims: Name='{User.FindFirst(nameClaimType)?.Value}', NameIdentifier='{User.FindFirst(ClaimTypes.NameIdentifier)?.Value}', " +
+                            $"Not Before='{DateTimeOffset.FromUnixTimeSeconds(long.Parse(User.FindFirst(JwtRegisteredClaimNames.Nbf)?.Value)).DateTime }', " +
+                            $"Expiration='{DateTimeOffset.FromUnixTimeSeconds(long.Parse(User.FindFirst(JwtRegisteredClaimNames.Exp)?.Value)).DateTime }', " +
+                            $"Scopes = '{User.FindFirst(scopeClaimType)?.Value}', Role = '{User.FindFirst(ClaimTypes.Role)?.Value}'";
+
+            _logger.LogInformation(claimsLog);
         }
     }
 }
