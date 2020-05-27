@@ -1,5 +1,6 @@
 ---
 page_type: sample
+author: derisen
 languages:
 - javascript
 - csharp
@@ -35,9 +36,9 @@ This sample demonstrates a cross-platform application suite involving an Angular
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
 | `AppCreationScripts` | Contains Powershell scripts to automate app registrations. |
-| `ReadmeFiles` | Sample readme files.                          |
-| `TodoListAPI` | Source code of the TodoList API.  |
-| `TodoListSPA` | Source code of the TodoList client SPA.  |
+| `ReadmeFiles`     | Sample readme files.                       |
+| `TodoListAPI`     | Source code of the TodoList API.           |
+| `TodoListSPA`     | Source code of the TodoList client SPA.    |
 | `CHANGELOG.md`    | List of changes to the sample.             |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
 | `README.md`       | This README file.                          |
@@ -127,7 +128,7 @@ There are two projects in this sample. Each needs to be separately registered in
 #### Register the service app (TodoListAPI)
 
 > [!NOTE]
-> If you would like to authorize users from other tenants to use this application (i.e. multi-tenancy - learn more about [tenancy in Azure AD](https://docs.microsoft.com/azure/active-directory/develop/single-and-multi-tenant-apps)), you may want to *combine* the registration steps for Web API and SPA, so that both the Web API and the SPA uses the **same** Application (client) ID. This is not needed for supporting **personal Microsoft accounts**.
+> This sample is **not** configured to be a multi-tenant sample (learn more about [tenancy in Azure AD](https://docs.microsoft.com/azure/active-directory/develop/single-and-multi-tenant-apps)). If you would like to authorize users from other tenants to use this application, you may want to review [this tutorial](https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-aspnet-webapi-multitenant) first.
 
 1. Navigate to the Microsoft identity platform for developers [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page.
 1. Select **New registration**.
@@ -154,7 +155,7 @@ The first thing that we need to do is to declare the unique [resource](https://d
 
 ##### Configure the  service app (TodoListAPI) to use your app registration
 
-Open the project in your IDE (like Visual Studio) to configure the code.
+Open the project in your IDE to configure the code.
 >In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListAPI\appsettings.json` file
@@ -168,7 +169,7 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 1. In the **Register an application page** that appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `TodoListSPA`.
    - Under **Supported account types**, select **Accounts in any organizational directory and personal Microsoft accounts**.
-   - In the **Redirect URI (optional)** section, select **Web** in the combo-box and enter the following redirect URI: `http://localhost:4200/`.
+   - In the **Redirect URI (optional)** section, select **Single-page application** in the combo-box and enter the following redirect URI: `http://localhost:4200/`.
 1. Select **Register** to create the application.
 1. In the app's registration screen, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
 1. In the app's registration screen, select **Authentication** in the menu.
@@ -187,7 +188,7 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 
 ##### Configure the  client app (TodoListSPA) to use your app registration
 
-Open the project in your IDE (like Visual Studio) to configure the code.
+Open the project in your IDE to configure the code.
 >In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListSPA\src\app\app-config.json` file
