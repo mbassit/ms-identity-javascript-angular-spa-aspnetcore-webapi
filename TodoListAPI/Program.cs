@@ -18,12 +18,12 @@ namespace TodoListAPI
 
             using (var scope = host.Services.CreateScope())
             {
-                var services = scope.ServiceProvider;
-                var logger = services.GetRequiredService<ILogger<Program>>();
+                var serviceProvider = scope.ServiceProvider;
+                var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
                 try
                 {
-                    var context = services.GetRequiredService<TodoContext>();
+                    var context = serviceProvider.GetRequiredService<TodoContext>();
                     context.Database.EnsureCreated();
 
                     if (context.TodoItems.Any())

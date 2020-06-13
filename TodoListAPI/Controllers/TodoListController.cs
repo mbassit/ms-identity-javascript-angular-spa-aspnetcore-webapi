@@ -144,8 +144,8 @@ namespace TodoListAPI.Controllers
             // See how to stop token claims to be mapped into proprietary Microsoft ones: https://stackoverflow.com/questions/47696872/incorrect-claim-type
             // See explanation of which namespace to use for JwtRegisteredClaimNames: https://stackoverflow.com/questions/38526950/namespaces-for-net-jwt-token-validation-system-vs-microsoft#comment65187203_38901344
             var claimsLog = $"Received token with following claims: Name='{User.FindFirst(nameClaimType)?.Value}', NameIdentifier='{User.FindFirst(ClaimTypes.NameIdentifier)?.Value}', " +
-                            $"Not Before='{DateTimeOffset.FromUnixTimeSeconds(long.Parse(User.FindFirst(JwtRegisteredClaimNames.Nbf)?.Value)).DateTime }', " +
-                            $"Expiration='{DateTimeOffset.FromUnixTimeSeconds(long.Parse(User.FindFirst(JwtRegisteredClaimNames.Exp)?.Value)).DateTime }', " +
+                            $"Not Before='{DateTimeOffset.FromUnixTimeSeconds(long.Parse(User.FindFirst(JwtRegisteredClaimNames.Nbf)?.Value)).DateTime } UTC', " +
+                            $"Expiration='{DateTimeOffset.FromUnixTimeSeconds(long.Parse(User.FindFirst(JwtRegisteredClaimNames.Exp)?.Value)).DateTime } UTC', " +
                             $"Scopes = '{User.FindFirst(scopeClaimType)?.Value}', Role = '{User.FindFirst(ClaimTypes.Role)?.Value}'";
 
             _logger.LogInformation(claimsLog);

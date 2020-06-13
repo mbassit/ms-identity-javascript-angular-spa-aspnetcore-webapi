@@ -2,12 +2,12 @@
   <a class="title" [routerLink]="['/']">{{ title }}</a>
 
   <div class="toolbar-spacer"></div>
-
+  <!-- Temporal step 1): user clicks on the login button -->
   <button mat-raised-button *ngIf="!loggedIn" (click)="login()">Login</button>
   <button mat-raised-button *ngIf="loggedIn" color="warn" (click)="logout()">Logout</button>
 </mat-toolbar>
 
 <div class="container">
-  <!--This is to avoid reload during acquireTokenSilent() because of hidden iframe -->
+  <!-- This is to avoid reloading the whole app in the hidden iFrame during acquireTokenSilent() -->
   <router-outlet *ngIf="!isIframe"></router-outlet>
 </div>

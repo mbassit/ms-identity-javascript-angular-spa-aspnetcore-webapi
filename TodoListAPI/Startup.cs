@@ -11,6 +11,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace TodoListAPI
 {
+    // NB: how to exclude the node_modules folder in Visual Studio WebSite projects: https://weblog.west-wind.com/posts/2016/Oct/30/Excluding-the-nodemodules-Folder-in-Visual-Studio-WebSite-Projects
+    // New "Microsoft.Identity.Web" library documentation: https://github.com/AzureAD/microsoft-identity-web/wiki
+    // Handling errors in MSAL.NET: https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-handling-exceptions?tabs=dotnet
+    // TODO:
+    // - try not using the new preview package "Microsoft.Identity.Web" but only the "Microsoft.AspNetCore.Authentication.AzureAD.UI" (e.g. use AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(...)) as in B. Noyes Pluralsight course
+    // - try claims checking as in the [Authorization in APIs] module of Pluralsight course: https://app.pluralsight.com/library/courses/authentication-authorization-aspnet-core/transcript
+    // - not sure how to try Azure AD B2C, but when it, in Startup.cs do: "services.AddAuthentication(AzureADB2CDefaults.AuthenticationScheme).AddAzureADB2C(....)" which is in nuget package "Microsoft.AspNetCore.Authentication.AzureADB2C.UI", as shown: https://youtu.be/M23P7tj_bXA?t=1865
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -28,6 +35,12 @@ namespace TodoListAPI
                 .AddProtectedWebApi(Configuration);
 
             // Creating policies that wraps the authorization requirements
+            // See here example of how to add multiple policies: https://github.com/blowdart/AspNetAuthorizationWorkshop#step-4-simple-policies
+                //services.AddAuthorization(options =>
+                //{
+                //    options.AddPolicy("AdministratorOnly", policy => policy.RequireRole("Administrator"));
+                //    options.AddPolicy("EmployeeId", policy => policy.RequireClaim("EmployeeId"));
+                //});
             services.AddAuthorization();
 
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
