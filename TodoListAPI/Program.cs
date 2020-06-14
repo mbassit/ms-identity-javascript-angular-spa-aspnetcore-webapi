@@ -16,6 +16,7 @@ namespace TodoListAPI
         {
             var host = CreateHostBuilder(args).Build();
 
+            // See module [Creating and Using Scopes] of Pluralsight course: https://app.pluralsight.com/library/courses/aspdotnet-core-dependency-injection/table-of-contents
             using (var scope = host.Services.CreateScope())
             {
                 var serviceProvider = scope.ServiceProvider;

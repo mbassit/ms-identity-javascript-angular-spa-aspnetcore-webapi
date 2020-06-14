@@ -5,6 +5,7 @@ import { BroadcastService, MsalService } from '@azure/msal-angular';
 import { InteractionRequiredAuthError, AuthError } from 'msal';
 import * as config from '../app-config.json';
 import { Todo } from '../todo';
+import { faSpinner, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 // tslint:disable: max-line-length
 
@@ -20,6 +21,9 @@ export class TodoViewComponent implements OnInit {
 
   displayedColumns = ['status', 'description', 'edit', 'remove'];
   errorMessage = '';
+  showSpinner = false;
+  faSpinner = faSpinner;
+  faExclamationTriangle = faExclamationTriangle;
 
   constructor(private authService: MsalService, private service: TodoService, private broadcastService: BroadcastService) { }
 
@@ -39,13 +43,16 @@ export class TodoViewComponent implements OnInit {
   }
 
   getTodos(): void {
+    this.showSpinner = true;
     this.errorMessage = '';
     this.service.getTodos().subscribe({
       next: (response: Todo[]) => {
         this.todos = response;
+        this.showSpinner = false;
       },
       error: (err: AuthError) => {
         this.errorMessage = `${err.message}`;
+        this.showSpinner = false;
 
         // See error handling documentation: https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-handling-exceptions?tabs=javascript
         // If there is an interaction required error,  call one of the interactive methods and then make the request again.
@@ -60,16 +67,19 @@ export class TodoViewComponent implements OnInit {
           })
           .then((authResponse) => {
             console.log(`Response promise from acquireTokenPopup() was: ${JSON.stringify(authResponse)}`);
+            this.showSpinner = true;
             this.errorMessage = '';
             this.service.getTodos()
                 .toPromise()
                 .then((response: Todo[])  => {
                   this.todos = response;
+                  this.showSpinner = false;
                 },
                 error => {
                   // NB: for Javascript promises it is advised to use the .catch() error handling pattern instead of the .then() onrejected handler (in this case the onfulfilled handler cannot fail, so it makes no difference), see:
                   // https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20%26%20performance/ch3.md#error-handling
                   this.errorMessage = error.message;
+                  this.showSpinner = false;
                 });
             });
         }
@@ -78,27 +88,42 @@ export class TodoViewComponent implements OnInit {
   }
 
   addTodo(add: NgForm): void {
+    this.showSpinner = true;
     this.errorMessage = '';
     this.service.postTodo(add.value).subscribe(() => {
       this.getTodos();
     },
-    error => this.errorMessage = error.message);
+    error => {
+      this.errorMessage = error.message;
+      this.showSpinner = false;
+    });
     add.resetForm();
   }
 
+  // TODO: the spinner icon would be best shown only on the table row being modified
   checkTodo(todo): void {
+    this.showSpinner = true;
     this.errorMessage = '';
+    // NB: here using new RxJS subscribe syntax: https://stackoverflow.com/a/55472361
     this.service.editTodo(todo).subscribe({
-      error: error => this.errorMessage = error.message  // NB: here using new RxJS observer syntax: https://stackoverflow.com/a/55472361
+      error: error => {
+        this.errorMessage = error.message;
+        this.showSpinner = false;
+      }
      });
   }
 
+  // TODO: the spinner icon would be best shown only on the table row being modified
   removeTodo(id): void {
+    this.showSpinner = true;
     this.errorMessage = '';
     this.service.deleteTodo(id).subscribe(() => {
       this.getTodos();
     },
-    error => this.errorMessage = error.message);
+    error => {
+      this.errorMessage = error.message;
+      this.showSpinner = false;
+    });
   }
 
 }

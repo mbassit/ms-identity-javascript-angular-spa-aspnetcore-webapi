@@ -12,7 +12,13 @@
 <br>
 <!-- Nice shadow effect! -->
 <div class="mat-elevation-z8">
-	<table mat-table [dataSource]="todos">
+  <span *ngIf="showSpinner">Loading...</span>
+  <fa-icon *ngIf="showSpinner"
+           [icon]="faSpinner"
+           [pulse]="true"
+           class="fa-lg">
+  </fa-icon>
+	<table *ngIf="!showSpinner" mat-table [dataSource]="todos">
 
 		<ng-container matColumnDef="status">
 			<th mat-header-cell *matHeaderCellDef> Status </th>
@@ -40,4 +46,8 @@
   </div>
   <br>
   <br>
-<div *ngIf="errorMessage" class="mat-elevation-z8" style="color:red;">{{ errorMessage }}</div>
+<div *ngIf="errorMessage" class="mat-elevation-z8" style="color:red;">
+  <fa-icon [icon]="faExclamationTriangle"
+                 class="fa-lg"></fa-icon>
+  <span>{{ errorMessage }}</span>
+</div>

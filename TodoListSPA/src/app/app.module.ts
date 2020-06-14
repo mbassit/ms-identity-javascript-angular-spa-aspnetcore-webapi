@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { Configuration, CacheLocation } from 'msal';
 import {
@@ -58,7 +59,7 @@ import { TodoViewComponent } from './todo-view/todo-view.component';
 // (here explaining how a WebAPI should perform access token validation: https://youtu.be/IIQ7QW4bYqA?t=445)
 // "Microsoft identity platform best practices for developers": https://www.youtube.com/watch?v=KoOCIwUDpjI (e.g. explaining scopes again here: https://youtu.be/KoOCIwUDpjI?t=849)
 // "Develop multi-tenant applications with Microsoft identity platform-April 2020" (explaining the meaning of "/Common" "/Consumer" and "/Organizations" authority: https://youtu.be/B416AxHoMJ4?t=1278)
-// WPF MSAL desktop app used in various Microsoft identity videos: https://github.com/kylemar/BestPracticesDemo (my fork here: https://github.com/mbassit/BestPracticesDemo/commits/master)
+// WPF MSAL.NET desktop app used in various Microsoft identity videos: https://github.com/kylemar/BestPracticesDemo (my fork here: https://github.com/mbassit/BestPracticesDemo/commits/master)
 // "[Short] Why migrate your app from v1.0 to v2.0 endpoint in Azure AD? | One Dev Question: Jean-Marc Prieur": https://www.youtube.com/watch?v=qpdC45tZYDg&feature=emb_title
 //    (MSAL supports v2 endpoints, which are OpenID Connect compliant (v1 was not) and allow for consumer accounts (in addition to work/school accounts) to be used as well)
 // "[Short] What are scopes within the Microsoft identity platform? | One Dev Question: Jean-Marc Prieur": https://www.youtube.com/watch?time_continue=47&v=eiPHOoLmGJs&feature=emb_title
@@ -70,6 +71,7 @@ import { TodoViewComponent } from './todo-view/todo-view.component';
 // -create GitHub PR to unsubscribe from event callbacks: https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular#4-subscribe-to-event-callbacks
 // -create GitHub PR to fix Angular tests if broken
 // -create GitHub PR after investigating if the MSAL Angular interceptor should have an error handler for the acquireTokenSilent() method?: https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/angular-1.0-release/lib/msal-angular/src/msal.interceptor.ts#L34
+// -create GitHub PR to look into/fix the non-idiomatic usage of BroadcastService.subscribe(): https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/1244
 // (and perhaps add unit tests for that error  case in the PR)
 
 // checks if the app is running on IE
@@ -118,7 +120,7 @@ function MSALAngularConfigFactory(): MsalAngularConfiguration {
     AppComponent,
     HomeComponent,
     TodoEditComponent,
-    TodoViewComponent,
+    TodoViewComponent
   ],
   imports: [
     BrowserModule,
@@ -137,6 +139,7 @@ function MSALAngularConfigFactory(): MsalAngularConfiguration {
     MatFormFieldModule,
     MatCheckboxModule,
     MatIconModule,
+    FontAwesomeModule
   ],
   providers: [
     {

@@ -2,3 +2,16 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import '~material-icons/iconfont/material-icons.css';
 
+.fa-spinner {
+  margin: 7px;
+}
+
+span {
+  vertical-align: super;
+  margin-left: 7px;
+}
+
+.fa-exclamation-triangle {
+  margin: 7px;
+}
+

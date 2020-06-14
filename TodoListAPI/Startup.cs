@@ -14,6 +14,7 @@ namespace TodoListAPI
     // NB: how to exclude the node_modules folder in Visual Studio WebSite projects: https://weblog.west-wind.com/posts/2016/Oct/30/Excluding-the-nodemodules-Folder-in-Visual-Studio-WebSite-Projects
     // New "Microsoft.Identity.Web" library documentation: https://github.com/AzureAD/microsoft-identity-web/wiki
     // Handling errors in MSAL.NET: https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-handling-exceptions?tabs=dotnet
+    //  (WPF MSAL.NET desktop app used in various Microsoft identity videos: https://github.com/kylemar/BestPracticesDemo, my fork here: https://github.com/mbassit/BestPracticesDemo/commits/master)
     // TODO:
     // - try not using the new preview package "Microsoft.Identity.Web" but only the "Microsoft.AspNetCore.Authentication.AzureAD.UI" (e.g. use AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(...)) as in B. Noyes Pluralsight course
     // - try claims checking as in the [Authorization in APIs] module of Pluralsight course: https://app.pluralsight.com/library/courses/authentication-authorization-aspnet-core/transcript
