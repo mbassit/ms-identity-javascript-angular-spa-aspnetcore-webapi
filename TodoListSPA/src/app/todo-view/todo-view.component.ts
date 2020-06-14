@@ -62,6 +62,8 @@ export class TodoViewComponent implements OnInit {
           // See acquiring token documentation: https://docs.microsoft.com/en-us/azure/active-directory/develop/scenario-spa-acquire-token?tabs=angular
           // and recommended code pattern: https://docs.microsoft.com/en-gb/azure/active-directory/develop/tutorial-v2-angular#acquire-a-token
           // See calling api documentation: https://docs.microsoft.com/en-us/azure/active-directory/develop/scenario-spa-call-api?tabs=angular
+          // NB: logging message below just to make it stand out among other logs
+          console.warn(`getTodos() failed with isInteractionRequiredError (errorCode=${err.errorCode}), hence calling acquireTokenPopup() first...`);
           this.authService.acquireTokenPopup({
             scopes: this.authService.getScopesForEndpoint(config.resources.todoListApi.resourceUri)
           })
