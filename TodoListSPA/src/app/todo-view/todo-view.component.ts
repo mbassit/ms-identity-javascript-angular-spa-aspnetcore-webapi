@@ -106,6 +106,7 @@ export class TodoViewComponent implements OnInit {
     this.errorMessage = '';
     // NB: here using new RxJS subscribe syntax: https://stackoverflow.com/a/55472361
     this.service.editTodo(todo).subscribe({
+      next: () => this.showSpinner = false,
       error: error => {
         this.errorMessage = error.message;
         this.showSpinner = false;

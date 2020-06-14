@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BroadcastService, MsalService } from '@azure/msal-angular';
 import { Logger, CryptoUtils } from 'msal';
+import { Subscription } from 'rxjs';
 
 // tslint:disable: max-line-length
 
@@ -9,10 +10,11 @@ import { Logger, CryptoUtils } from 'msal';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'Microsoft Identity Platform';
   isIframe = false;
   loggedIn = false;
+  private subscription = new Subscription();
 
   constructor(private broadcastService: BroadcastService, private authService: MsalService) { }
 
@@ -21,18 +23,19 @@ export class AppComponent implements OnInit {
 
     this.checkoutAccount();
 
-    this.broadcastService.subscribe('msal:loginSuccess', (payload) => {
+    // NB: using unsubscribing technique shown here: https://medium.com/angular-in-depth/the-best-way-to-unsubscribe-rxjs-observable-in-the-angular-applications-d8f9aa42f6a0#0d9a
+    this.subscription.add(this.broadcastService.subscribe('msal:loginSuccess', (payload) => {
       console.log(`loginSuccess event: ${JSON.stringify(payload)}`);
       this.checkoutAccount();
-    });
+    }));
 
-    this.broadcastService.subscribe('msal:loginFailure', (payload) => {
+    this.subscription.add(this.broadcastService.subscribe('msal:loginFailure', (payload) => {
       console.log(`loginFailure event: ${JSON.stringify(payload)}`);
-    });
+    }));
 
-    this.broadcastService.subscribe('msal:acquireTokenSuccess', payload => {
+    this.subscription.add(this.broadcastService.subscribe('msal:acquireTokenSuccess', payload => {
       console.log(`acquireTokenSuccess event: ${JSON.stringify(payload)}`);
-    });
+    }));
 
     // Regarding .handleRedirectCallback(), see: https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-handling-exceptions?tabs=javascript#error-types
     // "For error handling in authentication flows with redirect methods (loginRedirect, acquireTokenRedirect), you'll need to register the callback, which is called with success or failure after the redirect using handleRedirectCallback()"
@@ -79,6 +82,19 @@ export class AppComponent implements OnInit {
   logout() {
     this.authService.logout();
   }
+
+  ngOnDestroy(): void {
+    // NB: this app root component is never destroyed (nor reinitialized) hence this method is never called: adding it just to demonstrate how to unsubscribe from multiple subscriptions
+    // (cannot use the better .takeUntil() technique due to the non-idiomatic implementation of BroadcastService.subscribe() )
+    // NB: why is the following line needed? https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/angular-1.0-release/lib/msal-angular#4-subscribe-to-event-callbacks
+    this.broadcastService.getMSALSubject().next(1);
+
+    if (this.subscription) {
+      console.log('Unsubscribing broadcastService subscriptions');
+      this.subscription.unsubscribe();
+    }
+  }
+
 }
 
 
