@@ -39,7 +39,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Regarding .handleRedirectCallback(), see: https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-handling-exceptions?tabs=javascript#error-types
     // "For error handling in authentication flows with redirect methods (loginRedirect, acquireTokenRedirect), you'll need to register the callback, which is called with success or failure after the redirect using handleRedirectCallback()"
-    // See also: https://github.com/AzureAD/microsoft-authentication-library-for-js/wiki/FAQs#i-dont-understand-the-redirect-flow-how-does-the-handleredirectcallback-function-works
+    // See also: https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-core/docs/FAQ.md#i-dont-understand-the-redirect-flow-how-does-the-handleredirectcallback-function-work
     this.authService.handleRedirectCallback((authError, response) => {
       console.log(`Inside handleRedirectCallback handler`);
 

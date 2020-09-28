@@ -50,13 +50,16 @@ import { TodoViewComponent } from './todo-view/todo-view.component';
 //    (Suggestion to use a "simple page" that does not require authentication as redirect_uri: https://github.com/AzureAD/microsoft-authentication-library-for-js/wiki/FAQs#how-to-avoid-page-reloads-when-acquiring-and-renewing-tokens-silently
 // Changing token lifetime requires a paid feature Azure feature "Conditional Access Policy": https://docs.microsoft.com/en-gb/azure/active-directory/conditional-access/howto-conditional-access-session-lifetime
 //    (the old Powershell way was: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-configurable-token-lifetimes#token-lifetime-policy-properties)
-
 // MSAL Angular: PR for supporting authorization code flow with PKCE: https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/1000
 // Non-Angular PKCE version of MSAL.js library is called "@azure/msal-browser": https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser#oauth-20-and-the-implicit-flow-vs-authorization-code-flow-with-pkce
+// Not clear documentation about app lifecycle/handleRedirectCallback() when using redirect logins: https://github.com/MicrosoftDocs/azure-docs/issues/41911
+// https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/1288, https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/1535#issuecomment-618502501
+// https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-js-initializing-client-applications#initialize-msaljs-1x-apps
 // Great "Identity for Developers" playlist: https://www.youtube.com/playlist?list=PLLasX02E8BPBxGouWlJV-u-XZWOc2RkiX
 // (here explaining the typical pattern of acquireTokenSilent()/failure/acquireTokenPopup(): https://youtu.be/Mtpx_lpfRLs?t=560 and here: https://youtu.be/KoOCIwUDpjI?t=558
-// (here explaining the "/.default" scope: https://youtu.be/toAWRNqqDL4?t=1275 and scopes in general here: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#scopes-and-permissions)
-// (here explaining how a WebAPI should perform access token validation: https://youtu.be/IIQ7QW4bYqA?t=445)
+// (here explaining the "static" scope (= /.default): https://youtu.be/toAWRNqqDL4?t=1275 and scopes in general here: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#scopes-and-permissions)
+// (here explaining group and role claims (and how to assign roles to a user): https://youtu.be/KoOCIwUDpjI?t=1717)
+// (here explaining how a WebAPI should perform access token validation (including differences between single-tenant, multi-tenant and B2C): https://youtu.be/IIQ7QW4bYqA?t=445)
 // "Microsoft identity platform best practices for developers": https://www.youtube.com/watch?v=KoOCIwUDpjI (e.g. explaining scopes again here: https://youtu.be/KoOCIwUDpjI?t=849)
 // "Develop multi-tenant applications with Microsoft identity platform-April 2020" (explaining the meaning of "/Common" "/Consumer" and "/Organizations" authority: https://youtu.be/B416AxHoMJ4?t=1278)
 // WPF MSAL.NET desktop app used in various Microsoft identity videos: https://github.com/kylemar/BestPracticesDemo (my fork here: https://github.com/mbassit/BestPracticesDemo/commits/master)
@@ -65,6 +68,12 @@ import { TodoViewComponent } from './todo-view/todo-view.component';
 // "[Short] What are scopes within the Microsoft identity platform? | One Dev Question: Jean-Marc Prieur": https://www.youtube.com/watch?time_continue=47&v=eiPHOoLmGJs&feature=emb_title
 // "[Short] What's the role of redirect URI within the identity platform? | One Dev Question: Jean-Marc Prieur": https://www.youtube.com/watch?time_continue=30&v=znSN_3JAuoU&feature=emb_title
 // To see and manage list of apps that a given Microsoft account has given permissions to: https://account.live.com/consent/Manage
+// [2 September 2020]: Explanation of "Service Principal": https://youtu.be/WVNvoiA_ktw?t=1505: a service principal is 1 instance of the global app registration object,
+// e.g. in multitenant app there is only 1 global app registration object (in the original tenant where the app was developed) and then an additional service principal
+// is created on each other tenant that uses the app. The service principal contains the list of users who consented to the requested scopes.
+// Concept of principal in SQL Server, see submodule [Principals] in module [Security I] here: https://app.pluralsight.com/library/courses/sql-server-fundamentals/transcript
+// Explanation of Azure B2C: https://www.youtube.com/watch?v=U2Temcn-hes
+// Explanation of Azure Key Vault: https://www.youtube.com/watch?v=T0zpfInK7Kw
 
 // TODO:
 // -create GitHub PR with: added spinner when retrieving values, and show/clear error in UI
